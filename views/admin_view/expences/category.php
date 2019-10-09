@@ -1,0 +1,236 @@
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+         Income Expense Categories
+
+        <!-- <small>Control panel</small> -->
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="<?php echo base_url() ?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Expense Category List</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+    
+        <div class="col-xs-12">
+          <div class="box">
+            <br>
+
+            <?php if(in_array('createCategory', $user_permission)): ?>
+              <div class="box-header">
+                <a href="#" class="btn btn-sm btn-primary pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i> Add New</a>
+              </div>
+            <?php endif; ?>
+
+<form role="form" action="<?php echo base_url('expences/createExpencesCategory') ?>" method="post" id="createForm">
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title"><i class="fa fa-plus-circle" aria-hidden="true"></i> Create new category</h4>
+        </div>
+        <div class="modal-body">
+          <div class="box-body">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Category Name</label>
+              <input type="text" name="name" class="form-control"  placeholder="Enter Category">
+            </div>
+            <!-- <div class="form-group">
+              <label for="exampleInputEmail1">Type</label>
+              <select name="type" class="form-control">
+                <option value="income">Income</option>
+                <option value="exp">Expense</option>
+              </select>
+            </div>   -->
+            <div class="form-group">
+              <label for="exampleInputEmail1">Status</label>
+              <select name="status" class="form-control">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" name="submit" class="btn btn-sm btn-success"><i class="fa fa-fw fa-lg fa-check-circle"></i> Save Changes</button>
+          <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+  
+          <div style="padding: 10px">
+              <?php
+                  if($feedback = $this->session->flashdata('feedback'))
+                  {
+                      $feedback_class = $this->session->flashdata('feedback_class');
+              ?>
+                      <div class="form-group col-12">
+                          <div class="">
+                              <div class="alert <?= $feedback_class?>">
+                                  <?= $feedback ?>
+                              </div>
+                          </div>
+                      </div>
+              <?php }?>
+          </div>         
+            
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped mydatatable">
+                  <thead>
+                    <tr>
+                      <th>Sr.No.</th>
+                      <th>Name</th>
+                      <!-- <th>Type</th> -->
+                      <th>Status</th>
+                      <?php if(in_array('updateCategory', $user_permission) || in_array('deleteCategory', $user_permission)): ?>
+                        <th>Manage</th>
+                      <?php endif; ?>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php $no=1; foreach($allData as $rows): ?>
+                      <tr>
+                        <td><?php echo $no; ?></td>
+                        <td><?php echo ucwords($rows->name); ?></td>
+                        <!-- <td>< ?php echo ucwords($rows->type); ?></td> -->
+                        <td>
+                          <label class="label <?php echo $rows->status == 'active' ? 'label-success' : 'label-danger' ?>"><?php echo ucwords($rows->status) ?></label>
+                        </td>
+
+                      <?php if(in_array('updateCategory', $user_permission) || in_array('deleteCategory', $user_permission)): ?>
+
+                        <td width="170px">
+
+                          <?php if(in_array('updateCategory', $user_permission)): ?>
+                            <a href="javascript:void(0);" class="btn btn-sm btn-info editData" data-id="<?php echo $rows->id ?>" data-name="<?php echo $rows->name ?>" data-type="<?php echo $rows->type ?>" data-active="<?php echo $rows->status ?>" ><i class="fa fa-pencil"></i>Edit</a>
+                          <?php endif; ?>
+
+                          <?php if(in_array('deleteCategory', $user_permission)): ?>
+                            <a href="javascript:void(0);" class="btn btn-sm btn-danger deleteData" data-id="<?php echo $rows->id ?>"><i class="fa fa-trash"></i>Delete</a>
+                          <?php endif; ?>
+
+                        </td>
+                          <?php endif; ?>
+                        
+                      </tr>
+                    <?php $no++; endforeach; ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- /.box-body -->
+ 
+<form role="form" action="<?php echo base_url('expences/updateExpencesCategory') ?>" method="post">
+  <div class="modal fade" id="myModal1" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title"><i class="fa fa-pencil-square"></i> Edit Categories</h4>
+        </div>
+        <div class="modal-body">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Category Name</label>
+                  <input type="text" name="edit_expname" class="form-control"  placeholder="Enter Category">
+                  <input type="hidden" name="edit_expid" class="form-control"  placeholder="Enter Category">
+                </div>
+               <!--  <div class="form-group">
+                  <label for="exampleInputEmail1">Type</label>
+                  <select name="edit_exptype" class="form-control">
+                    <option value="income">Income</option>
+                    <option value="exp">Expense</option>
+                  </select>
+                </div>   -->
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Status</label>
+                  <select name="edit_expstatus" class="form-control">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+          </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-fw fa-lg  fa-pencil-square-o" aria-hidden="true"></i> Update</button>
+          <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<form role="form" action="<?php echo base_url('expences/deleteExpencesCategory') ?>" method="post" id="deleteForm">
+      <div class="modal fade" id="deleteWaiterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete Payment-Term</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+              <div class="modal-body">
+                <input type="hidden" id="id_edit" name="id_edit" >
+                <strong>Are you sure to delete this record?</strong>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success">Delete</button>
+              </div>
+          </div>
+        </div>
+      </div>
+  </form>
+
+
+
+          </div>
+        </div>
+        <!-- ./col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <div class="control-sidebar-bg"></div>
+
+</div>
+
+<script type="text/javascript">
+    $('.editData').on('click', function(){
+
+      var id = $(this).data('id');
+      var name = $(this).data('name');
+      var type = $(this).data('type');
+      var active = $(this).data('active');
+      // alert(id);
+      $('#myModal1').modal('show');
+      $('[name="edit_expid"]').val(id);
+      $('[name="edit_expname"]').val(name);
+      $('[name="edit_exptype"]').val(type);
+      $('[name="edit_expstatus"]').val(active);
+  });
+
+    $('.deleteData').on('click', function(){
+
+      var id = $(this).data('id');
+      // alert(id);
+      $('#deleteWaiterModal').modal('show');
+      $('[name="id_edit"]').val(id);
+  });
+</script>
